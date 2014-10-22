@@ -1,20 +1,29 @@
 set nocompatible
 filetype off
 
+set t_Co=256
+
 set rtp+=~/.vim/bundle/vundle/
 call vundle#rc()
 
 
-Bundle 'gmarik/vundle'
-Bundle 'Valloric/YouCompleteMe'
-Bundle 'otommod/ZoomWin'
-Bundle 'mileszs/ack.vim'
-Bundle 'kien/ctrlp.vim'
-Bundle 'scrooloose/nerdtree'
-Bundle 'tpope/vim-endwise'
-Bundle 'tpope/vim-rails'
-Bundle 'tpope/vim-surround'
-
+Plugin 'gmarik/vundle'
+Plugin 'Valloric/YouCompleteMe'
+Plugin 'otommod/ZoomWin'
+Plugin 'kien/ctrlp.vim'
+Plugin 'scrooloose/nerdtree'
+Plugin 'tpope/vim-endwise'
+Plugin 'tpope/vim-rails'
+Plugin 'tpope/vim-surround'
+Plugin 'tpope/vim-fugitive'
+Plugin 'fatih/vim-go'
+Plugin 'scrooloose/nerdcommenter'
+Plugin 'bling/vim-airline'
+Plugin 'airblade/vim-gitgutter'
+Plugin 'rking/ag.vim'
+Plugin 'flazz/vim-colorschemes'
+Plugin 'tmhedberg/matchit'
+Plugin 'mattn/emmet-vim'
 
 filetype plugin indent on
 
@@ -74,20 +83,43 @@ nnoremap j gj
 nnoremap k gk
 
 set clipboard=unnamedplus
-cnoreabbrev Ack Ack!
-cnoreabbrev ack Ack!
 set pastetoggle=<F2>
 nnoremap ; :
+cnoreabbrev ag Ag!
+cnoreabbrev Ag Ag!
 
 map <C-h> <C-w>h
 map <C-j> <C-w>j
 map <C-k> <C-w>k
 map <C-l> <C-w>l
 
+map <leader>zz %:sleep 1000m<CR>%
+
 " Ctrl P
 let g:ctrlp_map = '<c-p>'
+let g:ctrlp_user_command = ['.git/', 'git --git-dir=%s/.git ls-files -oc --exclude-standard']
 
 set wildignore=vendor "ignoring all the gems bundled
 
-" ag instead of ack
-let g:ackprg = 'ag --nogroup --nocolor --column'
+autocmd CursorMovedI * if pumvisible() == 0|pclose|endif
+autocmd InsertLeave * if pumvisible() == 0|pclose|endif
+
+
+" Go mappings
+
+au FileType go nmap <Leader>gb <Plug>(go-doc-browser)
+au FileType go nmap <leader>r <Plug>(go-run)
+au FileType go nmap <leader>b <Plug>(go-build)
+au FileType go nmap <leader>t <Plug>(go-test)
+au FileType go nmap <leader>c <Plug>(go-coverage)
+
+" Vim-Airline
+
+let g:airline_left_sep='|'
+let g:airline_right_sep='|'
+let g:airline#extensions#branch#empty_message = 'no-git'
+let g:airline_theme='dark'
+
+" Theme
+set background=dark
+colorscheme grb256
