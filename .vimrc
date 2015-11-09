@@ -8,14 +8,16 @@ call vundle#rc()
 
 
 Plugin 'gmarik/vundle'
+Plugin 'noahfrederick/vim-skeleton'
 Plugin 'Valloric/YouCompleteMe'
-Plugin 'otommod/ZoomWin'
+Plugin 'scrooloose/syntastic'
 Plugin 'kien/ctrlp.vim'
 Plugin 'scrooloose/nerdtree'
 Plugin 'tpope/vim-endwise'
 Plugin 'tpope/vim-rails'
 Plugin 'tpope/vim-surround'
 Plugin 'tpope/vim-fugitive'
+Plugin 'tpope/vim-haml'
 Plugin 'fatih/vim-go'
 Plugin 'scrooloose/nerdcommenter'
 Plugin 'bling/vim-airline'
@@ -24,6 +26,12 @@ Plugin 'rking/ag.vim'
 Plugin 'flazz/vim-colorschemes'
 Plugin 'tmhedberg/matchit'
 Plugin 'mattn/emmet-vim'
+Plugin 'editorconfig/editorconfig-vim'
+Plugin 'ciaranm/detectindent'
+Plugin 'christoomey/vim-tmux-navigator'
+Plugin 'davidhalter/jedi-vim'
+Plugin 'shougo/neocomplete.vim'
+Plugin 'vim-scripts/ZoomWin'
 
 filetype plugin indent on
 
@@ -53,6 +61,12 @@ map <F3> :NERDTreeToggle<CR>
 map <F4> :ZoomWin<CR>
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" Nerdtree ignores
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+
+let NERDTreeIgnore = ['\.pyc$']
+
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => Files, backups and undo
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " Turn backup off, since most stuff is in SVN, git anyway...
@@ -68,6 +82,11 @@ set undoreload=10000 "maximum number lines to save for undo on a buffer
 
 map <leader><space> :noh<cr>
 map <leader>x :ccl<cr>
+
+" Template insertion
+nnoremap <leader>t :SkelInsert!<cr>
+
+
 nnoremap <tab> %
 vnoremap <tab> %
 
@@ -94,6 +113,41 @@ map <C-k> <C-w>k
 map <C-l> <C-w>l
 
 map <leader>zz %:sleep 1000m<CR>%
+
+" YouCompleteMe
+nnoremap <leader>gd :YcmCompleter GoTo<cr>
+let g:ycm_filepath_completion_use_working_dir = 1
+" disable python
+let g:ycm_filetype_blacklist = {
+      \ 'python' : 1,
+      \ 'tagbar' : 1,
+      \ 'qf' : 1,
+      \ 'notes' : 1,
+      \ 'markdown' : 1,
+      \ 'unite' : 1,
+      \ 'text' : 1,
+      \ 'vimwiki' : 1,
+      \ 'pandoc' : 1,
+      \ 'infolog' : 1,
+      \ 'mail' : 1
+      \}
+
+" Jedi-vim
+let g:jedi#popup_select_first = 0
+let g:jedi#show_call_signatures = 2
+
+" Neocomplete
+
+autocmd FileType python setlocal omnifunc=jedi#completions
+let g:neocomplete#enable_at_startup = 1
+let g:jedi#completions_enabled = 0
+let g:jedi#auto_vim_configuration = 0
+let g:jedi#smart_auto_mappings = 0
+if !exists('g:neocomplete#force_omni_input_patterns')
+    let g:neocomplete#force_omni_input_patterns = {}
+endif
+let g:neocomplete#force_omni_input_patterns.python = '\%([^. \t]\.\|^\s*@\|^\s*from\s.\+import \|^\s*from \|^\s*import \)\w*'
+
 
 " Ctrl P
 let g:ctrlp_map = '<c-p>'
@@ -123,3 +177,14 @@ let g:airline_theme='dark'
 " Theme
 set background=dark
 colorscheme grb256
+
+" Markdown, not Modula-2
+autocmd BufNewFile,BufReadPost *.md set filetype=markdown
+autocmd BufWritePost *.md :silent !markdown -o <afile>:p:h/<afile>:t:r.html <afile>:p
+
+" Remove trailing whitespace from certain files
+autocmd FileType c,cpp,java,php,python autocmd BufWritePre <buffer> :%s/\s\+$//e
+
+" Show different background after 80 columns
+let &colorcolumn=join(range(81,999),",")
+highlight ColorColumn ctermbg=235 guibg=#2c2d27

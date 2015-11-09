@@ -1,7 +1,7 @@
 vim_layout
 ==========
 
-Default vim layout for YACfirm
+Default vim layout for yacfirm
 
 Instructions
 ============
